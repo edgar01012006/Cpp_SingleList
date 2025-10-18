@@ -1,81 +1,110 @@
-#include <iostream>
 #include "SingleList.hpp"
+#include <iostream>
+
+void testCopyAndMove() {
+    std::cout << "=== Copy & Move Test ===\n";
+
+    SingleList original{1, 2, 3};
+    SingleList copy = original; // Copy constructor
+    SingleList assigned;
+    assigned = original; // Copy assignment
+
+    SingleList moved = std::move(original); // Move constructor
+    SingleList moveAssigned;
+    moveAssigned = std::move(copy); // Move assignment
+
+    std::cout << "Moved List: " << moved;
+    std::cout << "Move Assigned List: " << moveAssigned;
+    std::cout << "Copy should now be empty: " << copy;
+    std::cout << "Original should now be empty: " << original;
+    std::cout << "Assigned (copy assignment): " << assigned << "\n";
+}
+
+void testConcatenation() {
+    std::cout << "\n=== Concatenation Test ===\n";
+
+    SingleList list1{1, 2, 3};
+    SingleList list2{4, 5};
+
+    SingleList result = list1 + std::move(list2);
+    std::cout << "Result of list1 + list2: " << result;
+
+    list1 += SingleList{6, 7};
+    std::cout << "List1 after += {6, 7}: " << list1 << "\n";
+}
+
+void testComparison() {
+    std::cout << "\n=== Comparison Test ===\n";
+
+    SingleList list1{1, 2, 3};
+    SingleList list2{1, 2, 3};
+    SingleList list3{1, 2};
+
+    std::cout << "list1 == list2: " << (list1 == list2) << "\n";
+    std::cout << "list1 != list3: " << (list1 != list3) << "\n";
+}
+
+void testIndexing() {
+    std::cout << "\n=== Indexing Test ===\n";
+
+    SingleList list{10, 20, 30};
+
+    for (int i = 0; i < list.size(); ++i) {
+        std::cout << "list[" << i << "] = " << list[i] << "\n";
+    }
+
+    std::cout << "Modifying list[1] = 200\n";
+    list[1] = 200;
+    std::cout << "Updated list: " << list;
+}
+
+void testIncrementDecrement() {
+    std::cout << "\n=== Increment/Decrement Test ===\n";
+
+    SingleList list{1, 2};
+
+    std::cout << "Original list: " << list;
+
+    std::cout << "Postfix increment (list++): " << list++;
+    std::cout << "After postfix increment: " << list;
+
+    std::cout << "Prefix increment (++list): " << ++list;
+
+    std::cout << "Postfix decrement (list--): " << list--;
+    std::cout << "After postfix decrement: " << list;
+
+    std::cout << "Prefix decrement (--list): " << --list << "\n";
+}
+
+void testStreamOperators() {
+    std::cout << "\n=== Stream Operators Test ===\n";
+    
+    SingleList list;
+    std::cout << "Enter a number to add to the list: ";
+    std::cin >> list;
+    std::cout << "You entered: " << list;
+}
+
+void testEdgeCases() {
+    std::cout << "\n=== Edge Cases Test ===\n";
+
+    SingleList empty;
+    std::cout << "Empty list: " << empty;
+    std::cout << "Is empty list false? (!empty): " << (!empty) << "\n";
+
+    SingleList single{42};
+    std::cout << "Single element list: " << single;
+    std::cout << "Accessing single[0]: " << single[0] << "\n";
+}
 
 int main() {
-    // Test 1: Creating lists using different constructors
-    SingleList list1;  // Default constructor
-    SingleList list2(5, 3);  // List with 5 repeated 3 times
-    SingleList list3 = {1, 2, 3, 4, 5};  // Initializer list
-    SingleList list4(list3);  // Copy constructor
-    SingleList list5 = std::move(list2);  // Move constructor
-    
-    std::cout << "Initial lists:" << std::endl;
-    std::cout << "list1: " << list1;
-    std::cout << "list2 (after move to list5): " << list2;
-    std::cout << "list3: " << list3;
-    std::cout << "list4 (copy of list3): " << list4;
-    std::cout << "list5 (moved from list2): " << list5;
-
-    // Test 2: Concatenation using + and += operators
-    SingleList list6 = list3 + list4;
-    std::cout << "\nConcatenation of list3 and list4 using +: " << list6;
-    
-    list3 += list4;
-    std::cout << "list3 after concatenation with += operator: " << list3;
-
-    // Test 3: Comparison using == and != operators
-    std::cout << "\nComparing lists:" << std::endl;
-    if (list3 == list4) {
-        std::cout << "list3 and list4 are equal" << std::endl;
-    } else {
-        std::cout << "list3 and list4 are not equal" << std::endl;
-    }
-    
-    if (list5 != list6) {
-        std::cout << "list5 and list6 are not equal" << std::endl;
-    } else {
-        std::cout << "list5 and list6 are equal" << std::endl;
-    }
-
-    // Test 4: Indexing using [] operator
-    std::cout << "\nIndexing into list6:" << std::endl;
-    std::cout << "Element at index 2 of list6: " << list6[2] << std::endl;
-    
-    // Test 5: Prefix and Postfix increment/decrement
-    std::cout << "\nPrefix and Postfix increment/decrement:" << std::endl;
-    std::cout << "list3 before increment: " << list3;
-    ++list3;  // Prefix increment
-    std::cout << "list3 after prefix increment: " << list3;
-    list3++;  // Postfix increment
-    std::cout << "list3 after postfix increment: " << list3;
-    
-    std::cout << "list3 before decrement: " << list3;
-    --list3;  // Prefix decrement
-    std::cout << "list3 after prefix decrement: " << list3;
-    list3--;  // Postfix decrement
-    std::cout << "list3 after postfix decrement: " << list3;
-
-    // Test 6: Stream operators << and >> (I will simulate input through code)
-    std::cout << "\nStream operators << and >>:" << std::endl;
-    
-    std::cout << "Enter values for a new list (e.g., 10): ";
-    SingleList inputList;
-    std::cin >> inputList;  // Using stream operator to input values
-    std::cout << "You entered: " << inputList;
-    
-    // Edge cases: Empty list and single element list
-    SingleList emptyList;
-    std::cout << "\nEdge Case: Empty list: " << emptyList;
-
-    SingleList singleElementList(42, 1);  // Single element list
-    std::cout << "Edge Case: Single element list: " << singleElementList;
-
-    // Test edge case: Accessing elements and handling errors
-    try {
-        std::cout << "\nAccessing invalid index in list3: " << list3[100] << std::endl;
-    } catch (...) {
-        std::cout << "Caught error when accessing invalid index!" << std::endl;
-    }
+    testCopyAndMove();
+    testConcatenation();
+    testComparison();
+    testIndexing();
+    testIncrementDecrement();
+    testStreamOperators();
+    testEdgeCases();
 
     return 0;
 }
