@@ -2,11 +2,9 @@
 
 SingleList::SingleList() : m_head { nullptr } {}
 
-SingleList::SingleList(int val, int count = 1) : m_head { new Node(val) } {
-    Node* tmp = m_head;
-    while (count-- != 1) {
-        tmp->m_next = new Node(val);
-        tmp = tmp->m_next;
+SingleList::SingleList(int val, int count = 1) : m_head { nullptr } {
+    for (int i = 0; i < count; ++i) {
+        push_front(val);
     }
 }
 
@@ -62,33 +60,27 @@ std::istream& operator>>(std::istream& istr, SingleList& src) {
     return istr;
 }
 
-SingleList operator+(const SingleList& lhs, const SingleList& rhs) {
-    SingleList::Node* Ltmp = lhs.m_head;
-    SingleList::Node* Rtmp = rhs.m_head;
-    SingleList dummy;
-    while (Ltmp != nullptr || Rtmp != nullptr) {
-        dummy.push_back(Ltmp->m_val + Rtmp->m_val);
-        Ltmp = Ltmp->m_next;
-        Rtmp = Rtmp->m_next;
-    }
-    return dummy;
+SingleList operator+(SingleList lhs, SingleList rhs) {
+    return lhs += std::move(rhs);
 }
 
-SingleList& SingleList::operator+=(const SingleList& rhs) {
-    Node* Ltmp = m_head;
-    Node* Rtmp = rhs.m_head;
-    while (Ltmp != nullptr || Rtmp != nullptr) {
-        Ltmp->m_val += Rtmp->m_val;
-        Ltmp = Ltmp->m_next;
-        Rtmp = Rtmp->m_next;
+SingleList& SingleList::operator+=(SingleList&& rhs) {
+    if (m_head == nullptr) {
+        m_head = rhs.m_head;
     }
+    else if (this != &rhs) {
+        Node* tmp = m_head;
+        while (tmp->m_next != nullptr) {
+            tmp = tmp->m_next;
+        }
+        tmp->m_next = rhs.m_head;
+    }
+    rhs.m_head = nullptr;
     return *this;
 }
 
 bool SingleList::operator==(const SingleList& rhs) const {
-    int Lsize = size();
-    int Rsize = rhs.size();
-    if (Lsize == Rsize) {
+    if (size() == rhs.size()) {
         Node* Ltmp = m_head;
         Node* Rtmp = rhs.m_head;
         while (Ltmp != nullptr) {
@@ -108,24 +100,11 @@ bool SingleList::operator!=(const SingleList& rhs) const {
 }
 
 int& SingleList::operator[](size_t index) {
-    int size = this->size();
-    if (index >= size) {
-        std::cout << "Invalid Index; Exiting\n";
-        std::exit(EXIT_FAILURE);
-    }
-    Node* tmp = m_head;
-    while (index-- != 0) {
-        tmp = tmp->m_next;
-    }
-    return tmp->m_val;
+    return const_cast<int&>(static_cast<const SingleList&>(*this)[index]); // Scott Meyers(55) Item 3.
 }
 
 const int& SingleList::operator[](size_t index) const {
-    int size = this->size();
-    if (index >= size) {
-        std::cout << "Invalid Index; Exiting\n";
-        std::exit(EXIT_FAILURE);
-    }
+    boundsCheck(index);
     const Node* tmp = m_head;
     while (index-- != 0) {
         tmp = tmp->m_next;
@@ -213,17 +192,23 @@ void SingleList::clear() {
     while (m_head != nullptr) {
         pop_front();
     }
-    m_head = nullptr;
 }
 
-void SingleList::copy(const SingleList& src) {
-    Node* tmp = src.m_head;
+void SingleList::boundsCheck(size_t index) const {
+    if (index >= size() || index < 0) {
+        std::cout << "Invalid Index; Exiting\n";
+        std::exit(EXIT_FAILURE);
+    }
+}
+
+void SingleList::copy(const SingleList& rhs) {
+    Node* Rtmp = rhs.m_head;
     Node dummy;
-    Node* tmp2 = &dummy;
-    while (tmp != nullptr) {
-        tmp2->m_next = new Node(tmp->m_val);
-        tmp2 = tmp2->m_next;
-        tmp = tmp->m_next;
+    Node* Ltmp = &dummy;
+    while (Rtmp != nullptr) {
+        Ltmp->m_next = new Node(Rtmp->m_val);
+        Ltmp = Ltmp->m_next;
+        Rtmp = Rtmp->m_next;
     }
     m_head = dummy.m_next;
 }

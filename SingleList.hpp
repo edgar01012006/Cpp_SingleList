@@ -17,11 +17,11 @@ class SingleList {
 
         friend std::ostream& operator<<(std::ostream& ostr, const SingleList& src);
         friend std::istream& operator>>(std::istream& istr, SingleList& src);
-        friend SingleList operator+(const SingleList& lhs, const SingleList& rhs); // will return the smaller size list concatenated
-        SingleList& operator+=(const SingleList& rhs);
+        friend SingleList operator+(SingleList lhs, SingleList rhs);
+        SingleList& operator+=(SingleList&& rhs);
         bool operator==(const SingleList& rhs) const;
         bool operator!=(const SingleList& rhs) const;
-        int& operator[](size_t index); // if index is negative it leads to undefined behavior(same for const version)
+        int& operator[](size_t index);
         const int& operator[](size_t index) const;
         bool operator!() const;
         SingleList& operator++();
@@ -37,6 +37,7 @@ class SingleList {
         void clear();
 
     private:
+        void boundsCheck(size_t index) const;
         void copy(const SingleList& rhs);
         struct Node {
             int m_val;
