@@ -141,6 +141,20 @@ SingleList SingleList::operator--(int) {
     return tmp;
 }
 
+SingleList::operator bool() const {
+    return m_head;
+}
+
+SingleList::operator std::vector<int>() const {
+    std::vector<int> vec;
+    Node* tmp = m_head;
+    for (int i = 0; i < size(); ++i) {
+        vec.push_back(tmp->m_val);
+        tmp = tmp->m_next;
+    }
+    return vec;
+}
+
 void SingleList::push_front(int val) {
     Node* tmp = new Node(val, m_head);
     m_head = tmp;

@@ -3,6 +3,7 @@
 
 #include <initializer_list>
 #include <iostream>
+#include <vector>
 
 class SingleList {
     public:
@@ -28,6 +29,8 @@ class SingleList {
         SingleList operator++(int);
         SingleList& operator--();
         SingleList operator--(int);
+        operator bool() const;
+        operator std::vector<int>() const;
 
         void push_back(int val);
         void push_front(int val);
