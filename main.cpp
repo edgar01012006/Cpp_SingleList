@@ -97,6 +97,37 @@ void testEdgeCases() {
     std::cout << "Accessing single[0]: " << single[0] << "\n";
 }
 
+void testConversions() {
+    std::cout << "\n=== Conversions Test ===\n";
+
+    SingleList list(10, 3); // Three elements with value 10
+    std::cout << "SingleList contents: " << list;
+
+    std::vector<int> vec = list; // Implicit conversion
+    std::cout << "Converted to std::vector<int>: ";
+    for (int val : vec) {
+        std::cout << val << ' ';
+    }
+    std::cout << '\n';
+
+    if (list) {
+        std::cout << "The list evaluates to true (non-empty).\n";
+    } else {
+        std::cout << "The list evaluates to false (empty).\n";
+    }
+
+    SingleList emptyList;
+    std::vector<int> emptyVec = emptyList;
+    std::cout << "Empty list converted to vector has size: " << emptyVec.size() << '\n';
+
+    if (!emptyList) {
+        std::cout << "The empty list evaluates to false (empty).\n";
+    } else {
+        std::cout << "The empty list evaluates to true (non-empty).\n";
+    }
+}
+
+
 int main() {
     testCopyAndMove();
     testConcatenation();
@@ -105,6 +136,7 @@ int main() {
     testIncrementDecrement();
     testStreamOperators();
     testEdgeCases();
+    testConversions();
 
     return 0;
 }
