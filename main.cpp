@@ -26,11 +26,13 @@ void testConcatenation() {
     SingleList list1{1, 2, 3};
     SingleList list2{4, 5};
 
-    SingleList result = list1 + std::move(list2);
+    SingleList result = list1 + list2;
     std::cout << "Result of list1 + list2: " << result;
 
-    list1 += SingleList{6, 7};
-    std::cout << "List1 after += {6, 7}: " << list1 << "\n";
+    list1 += list2;
+    std::cout << "List1 after += list2: " << list1 << "\n";
+
+    std::cout << "List2 after list1 += list2: " << list2 << "\n";
 }
 
 void testComparison() {
