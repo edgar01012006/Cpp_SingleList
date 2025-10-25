@@ -9,9 +9,13 @@ SingleList::SingleList(int val, int count = 1) : m_head { nullptr } {
 }
 
 SingleList::SingleList(std::initializer_list<int> list) : m_head { nullptr } {
+    Node dummy;
+    Node* tmp = &dummy;
     for (int i: list) {
-        push_back(i);
+        tmp->m_next = new Node(i);
+        tmp = tmp->m_next;
     }
+    m_head = dummy.m_next;
 }
 
 SingleList::SingleList(const SingleList& src) {
@@ -56,15 +60,16 @@ std::ostream& operator<<(std::ostream& ostr, const SingleList& src) {
 std::istream& operator>>(std::istream& istr, SingleList& src) {
     int val;
     istr >> val;
-    src.push_back(val);
+    src.clear();
+    src.push_front(val);
     return istr;
 }
 
 SingleList operator+(SingleList lhs, SingleList rhs) {
-    return lhs += std::move(rhs);
+    return lhs += rhs;
 }
 
-SingleList& SingleList::operator+=(SingleList&& rhs) {
+SingleList& SingleList::operator+=(SingleList rhs) {
     if (m_head == nullptr) {
         m_head = rhs.m_head;
     }
@@ -79,10 +84,10 @@ SingleList& SingleList::operator+=(SingleList&& rhs) {
     return *this;
 }
 
-bool SingleList::operator==(const SingleList& rhs) const {
-    if (size() == rhs.size()) {
-        Node* Ltmp = m_head;
-        Node* Rtmp = rhs.m_head;
+bool operator==(const SingleList& lhs, const SingleList& rhs) {
+    if (lhs.size() == rhs.size()) {
+        SingleList::Node* Ltmp = lhs.m_head;
+        SingleList::Node* Rtmp = rhs.m_head;
         while (Ltmp != nullptr) {
             if (Ltmp->m_val != Rtmp->m_val) {
                 return false;
@@ -148,7 +153,8 @@ SingleList::operator bool() const {
 SingleList::operator std::vector<int>() const {
     std::vector<int> vec;
     Node* tmp = m_head;
-    for (int i = 0; i < size(); ++i) {
+    int list_size = size();
+    for (int i = 0; i < list_size; ++i) {
         vec.push_back(tmp->m_val);
         tmp = tmp->m_next;
     }

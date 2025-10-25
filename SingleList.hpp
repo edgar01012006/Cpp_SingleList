@@ -19,8 +19,8 @@ class SingleList {
         friend std::ostream& operator<<(std::ostream& ostr, const SingleList& src);
         friend std::istream& operator>>(std::istream& istr, SingleList& src);
         friend SingleList operator+(SingleList lhs, SingleList rhs);
-        SingleList& operator+=(SingleList&& rhs);
-        bool operator==(const SingleList& rhs) const;
+        SingleList& operator+=(SingleList rhs);
+        friend bool operator==(const SingleList& lhs, const SingleList& rhs);
         bool operator!=(const SingleList& rhs) const;
         int& operator[](size_t index);
         const int& operator[](size_t index) const;
